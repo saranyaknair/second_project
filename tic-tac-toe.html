@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+         h1{
+            text-align: center;
+            place-content: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size:xx-large;
+         }
+          #grid{
+            display: grid;
+            grid-template-columns: 150px 150px 60px;
+            grid-template-rows: 150px 150px 150px;            
+            place-content: center;
+            justify-content: center;
+        }
+        #match{
+            background-color:yellow;
+            border:2px solid black;
+            height:150px;
+            width:150px;
+            text-align: center;
+            place-content: center;
+            justify-content: center;
+          }
+    </style>
+</head>
+<body>
+     <h1>TIC-TAC-TOE</h1>
+    <div id="grid">
+     <div id="match" data-index="0"></div>
+     <div id="match" data-index="1"></div>
+     <div id="match" data-index="2"></div>
+     <div id="match" data-index="3"></div>
+     <div id="match" data-index="4"></div>
+     <div id="match" data-index="5"></div>
+     <div id="match" data-index="6"></div>
+     <div id="match" data-index="7"></div>
+     <div id="match" data-index="8"></div>
+    </div>
+    <script>
+        let currentPlayer = 'X';  // The player who will go first
+        let gameBoard = ['', '', '', '', '', '', '', '', ''];  // Empty grid to start
+        
+        
+        const matchs = document.querySelectorAll('#match');  // Get all cells
+        const grids = document.getElementById('grid');
+        
+let gameOver = false; // Flag to check if the game is over
+
+// Winning conditions (indices)
+const winConditions = [
+    [0, 1, 2], // Row 1
+    [3, 4, 5], // Row 2
+    [6, 7, 8], // Row 3
+    [0, 3, 6], // Column 1
+    [1, 4, 7], // Column 2
+    [2, 5, 8], // Column 3
+    [0, 4, 8], // Diagonal 1
+    [2, 4, 6]  // Diagonal 2
+];
+
+// Handle click events
+matchs.forEach(cell => {
+    cell.addEventListener('click', function() {
+        if (gameOver) return; // Do nothing if the game is over
+
+        const index = this.getAttribute('data-index');  // Get the index of the clicked cell
+        if (gameBoard[index] === '') {  // Only allow if the cell is empty
+            gameBoard[index] = currentPlayer;  // Mark the cell with the current player's symbol
+            this.textContent = currentPlayer;  // Update the displayed symbol
+            this.classList.add('clicked');  // Disable further clicks on this cell
+
+            // Check for a winner after the move
+            if (checkWinner()) {
+                alert(`${currentPlayer} wins!`);
+                gameOver = true;
+                return;
+            }
+
+            // Check for a tie after the move
+            if (gameBoard.every(cell => cell !== '')) {
+                alert("It's a tie!");
+                gameOver = true;
+                return;
+            }
+
+            // Switch the current player
+            currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+        }
+    });
+});
+
+// Function to check if there is a winner
+function checkWinner() {
+    for (let condition of winConditions) {
+        const [a, b, c] = condition;
+        if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
+            return true;  // There's a winner
+        }
+    }
+    return false;  // No winner
+}
+
+
+    </script>
+</body>
+</html>

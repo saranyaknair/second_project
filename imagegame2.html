@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./drag.js"></script>
+    <link href=".jquery-ui.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+    <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
+    <script src="./jquery-ui.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+
+    <style>
+        body {
+            overflow-x: hidden;
+            font-family: 'Arial', sans-serif;
+            background-color:white;
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+           
+        
+        }
+
+        /* Main Game Area */
+        #main {
+            display: grid;
+            grid-template-columns: 100px 100px 100px;
+            grid-template-rows: 100px 100px 100px;
+            gap: 2px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        /* Draggable images */
+        img {
+            width: 95px;
+            height: 95px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: grab;
+            transition: transform 0.3s ease, box-shadow 0.2s ease;
+        }
+
+        img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Styling for the main2 (drop grid) */
+        #main2 {
+            display: grid;
+            grid-template-columns: 100px 100px 100px;
+            grid-template-rows: 100px 100px 100px;
+            gap: 2px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        #main2 div {
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, border 0.3s ease;
+        }
+
+        #main2 div:hover {
+            background-color: #e1e1e1;
+            border-color: #888;
+        }
+
+        #main2 div.droppable-hover {
+            background-color: #f0f0f0;
+            border-color: #888;
+        }
+
+        /* Styling for Game Over */
+        #over {
+            /* position: relative;
+            top: 165px;
+            left: 50%;
+            transform: translateX(-50%); */
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #ff4747;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        /* Button Styles */
+        #btn {
+            padding: 12px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            /* display: block; */
+            /* margin: 0 auto; */
+            margin-top: 30px;
+            /* display:flex; */
+            /* flex-direction: column; */
+            margin-left: 15px;
+            height:90px;
+            width:90px;
+        }
+
+        #btn:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        #btn:active {
+            background-color: #388e3c;
+        }
+
+        /* Countdown Timer Styling */
+        #countdown {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Styling for Confetti Canvas */
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Center countdown and game over */
+        #over {
+            /* text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); */
+        }
+
+        /* Add some margin for the whole body */
+        .container {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            @media (max-width:770px) {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Confetti Canvas -->
+    <canvas class="confetti" id="canvas"></canvas>
+    <div id="countdown"></div>
+    <div id="over">
+        Game Over
+        <button id="Again">Play Again</button>
+    <button>Close</button>
+    </div>
+    
+    <div class="container">
+        <!-- Puzzle Grid -->
+        <div id="main" class="ui-widget-content">
+            <img id="draggable" title="3" src="./CUTData/slice_0_2.gif">
+            <img id="draggable" title="4" src="./CUTData/slice_1_0.gif">
+            <img id="draggable" title="2" src="./CUTData/slice_0_1.gif">
+            <img id="draggable" title="6" src="./CUTData/slice_1_2.gif">
+            <img id="draggable" title="1" src="./CUTData/slice_0_0.gif">
+            <img id="draggable" title="8" src="./CUTData/slice_2_1.gif">
+            <img id="draggable" title="9" src="./CUTData/slice_2_2.gif">
+            <img id="draggable" title="7" src="./CUTData/slice_2_0.gif">
+            <img id="draggable" title="5" src="./CUTData/slice_1_1.gif">
+        </div>
+
+        <!-- Start Button -->
+        <button id="btn">Start</button>
+
+        <!-- Countdown Timer -->
+
+        <!-- Game Over Message -->
+
+        <!-- Drop Grid -->
+        <div id="main2">
+            <div id="drop" title="1"></div>
+            <div id="drop" title="2"></div>
+            <div id="drop" title="3"></div>
+            <div id="drop" title="4"></div>
+            <div id="drop" title="5"></div>
+            <div id="drop" title="6"></div>
+            <div id="drop" title="7"></div>
+            <div id="drop" title="8"></div>
+            <div id="drop" title="9"></div>
+        </div>
+    </div>
+
+
+    <script>
+        $('#over').hide() // Show the popup
+
+        // Confetti animation code (from your original code)
+        //-----------Var Inits--------------
+        canvas = document.getElementById("canvas");
+        ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let confetti = [];
+        const confettiCount = 300;
+        const gravity = 0.5;
+        const terminalVelocity = 5;
+        const drag = 0.075;
+        const colors = [
+            { front: 'red', back: 'darkred' },
+            { front: 'green', back: 'darkgreen' },
+            { front: 'blue', back: 'darkblue' },
+            { front: 'yellow', back: 'darkyellow' },
+            { front: 'orange', back: 'darkorange' },
+            { front: 'pink', back: 'darkpink' },
+            { front: 'purple', back: 'darkpurple' },
+            { front: 'turquoise', back: 'darkturquoise' }
+        ];
+
+        resizeCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+
+        randomRange = (min, max) => Math.random() * (max - min) + min;
+
+        initConfetti = () => {
+            for (let i = 0; i < confettiCount; i++) {
+                confetti.push({
+                    color: colors[Math.floor(randomRange(0, colors.length))],
+                    dimensions: {
+                        x: randomRange(10, 20),
+                        y: randomRange(10, 30)
+                    },
+                    position: {
+                        x: randomRange(0, canvas.width),
+                        y: canvas.height - 1
+                    },
+                    rotation: randomRange(0, 2 * Math.PI),
+                    scale: {
+                        x: 1,
+                        y: 1
+                    },
+                    velocity: {
+                        x: randomRange(-25, 25),
+                        y: randomRange(0, -50)
+                    }
+                });
+            }
+        };
+
+        render = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            confetti.forEach((confetto, index) => {
+                let width = confetto.dimensions.x * confetto.scale.x;
+                let height = confetto.dimensions.y * confetto.scale.y;
+
+                // Move canvas to position and rotate
+                ctx.translate(confetto.position.x, confetto.position.y);
+                ctx.rotate(confetto.rotation);
+
+                // Apply forces to velocity
+                confetto.velocity.x -= confetto.velocity.x * drag;
+                confetto.velocity.y = Math.min(confetto.velocity.y + gravity, terminalVelocity);
+                confetto.velocity.x += Math.random() > 0.5 ? Math.random() : -Math.random();
+
+                // Set position
+                confetto.position.x += confetto.velocity.x;
+                confetto.position.y += confetto.velocity.y;
+
+                // Delete confetti when out of frame
+                if (confetto.position.y >= canvas.height) confetti.splice(index, 1);
+
+                // Loop confetto x position
+                if (confetto.position.x > canvas.width) confetto.position.x = 0;
+                if (confetto.position.x < 0) confetto.position.x = canvas.width;
+
+                // Spin confetto by scaling y
+                confetto.scale.y = Math.cos(confetto.position.y * 0.1);
+                ctx.fillStyle = confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
+
+                // Draw confetti
+                ctx.fillRect(-width / 2, -height / 2, width, height);
+
+                // Reset transform matrix
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+            });
+
+            window.requestAnimationFrame(render);
+        };
+
+        let arr=[]
+        let won=false
+        function start (prp) {
+            console.log(prp);
+            
+            if(prp == 'again'){
+                $('#over').hide() // Show the popup
+            }
+            var now = new Date().getTime();
+            var countDownDate = now + 6000;  // 6 seconds for example, change as needed
+            var x = setInterval(function () {
+                $("img").click(function (event) {
+                    $(event.target).draggable();
+                });
+                $("#drop ").droppable({
+                    drop: function (event, ui) {
+                        for (let i of event.currentTarget.images) {
+                            var attributes = i.getAttributeNames();
+                            if (attributes.includes('class')) {
+                                if (i.title == event.target.title) {
+                                    arr.push(1)
+                                    console.log(arr);
+                                    $(event.target).draggable('disable');
+                                }
+                            } else {
+                                console.log("The element does not have a 'class' attribute.");
+                            }
+                        }
+                    }
+                });
+                
+                if(arr.length==9){
+                    won=true
+                    clearInterval(x); // Stop the countdown 
+                    initConfetti();
+                    render(); 
+                    setTimeout(() => {
+                        won=false
+                        confetti=[]
+                    },3000)
+                }
+
+                var currentTime = new Date().getTime();
+                var distance = countDownDate - currentTime;
+
+                // Fix for minutes and seconds calculations
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000); // Fixed this line to correctly calculate seconds
+
+                // Ensure that the time doesn't go negative
+                if (distance < 0) {
+                    $('#over').show('slow') // Show the popup
+                    minutes = 0;
+                    seconds = 0;
+                    clearInterval(x); // Stop the countdown
+                    console.log("hiii");
+
+                    if ($('img').draggable()) {
+                        $("img").draggable('disable'); // Disable drag for images
+                    }
+                }
+
+                document.getElementById("countdown").innerHTML = minutes + "m " + seconds + "s ";
+
+            }, 1000);
+        }
+        $('#btn').click(start);
+        $('#Again').click(() =>start('again'));
+
+    </script>
+</body>
+
+</html>

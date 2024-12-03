@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      height: 100vh;
+      display:flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    h1{
+      text-align: center;
+      font-size: xx-large;
+      font-weight:bold;
+    }
+
+    .container {
+      margin-top: 50px;
+      display: flex;
+      flex-direction: column;
+      background-color: deeppink;
+      padding: 15px;
+      /* height:400px; */
+      width: 300px;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+    }
+
+    #word {
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      place-content: center;
+    }
+
+    input {
+      margin: 5px;
+      padding: 7px;
+      height: 35px;
+      border-radius: 5px;
+    }
+
+    button {
+      height: 40px;
+      width: 180px;
+      margin: 5px 0px;
+      background-color: skyblue;
+      border-radius: 5px;
+      color: black;
+      border: none;
+    }
+
+    button:hover {
+      background-color: black;
+      color: skyblue;
+    }
+
+    #guessword {
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      place-items: center;
+    }
+    #lives {
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      place-content: center;
+      background-color:chartreuse;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Hangman Game</h1>
+  <div class="container">
+    <p id="word"></p>
+    <p id="guessword"></p>
+    <input type="text" maxlength="1" id="text">
+    <p id="lives"></p>
+    <button onclick="guess()">submit</button>
+  </div>
+  <script>
+    const wordList = [
+      "apple", "banana", "cherry", "dragon", "elephant",
+      "guitar", "harmony", "incredible", "jungle", "kiwi",
+      "lighthouse", "mountain", "ninja", "orange", "parrot",
+      "quilt", "raven", "sunshine", "tiger", "unicorn",
+      "vulture", "whale", "xylophone", "yacht", "zebra",
+      "adventure", "butterfly", "coffee", "dolphin", "empathy"
+    ];
+    let words = document.getElementById('word')
+    let selectedword = ''
+    let displayWord = []
+    let input = document.getElementById('text')
+    let guessword = document.getElementById('guessword')
+    let guessLetter = []
+    let lives = 6
+    let livetag = document.getElementById('lives')
+    function startGame() {
+      selectedword = wordList[Math.floor(Math.random() * wordList.length)].toUpperCase()
+      lives = 6
+      livetag.innerHTML = lives
+      console.log(selectedword);
+      displayWord = Array(selectedword.length).fill('_')
+      console.log(displayWord);
+      words.innerHTML = displayWord.join(' ')
+    }
+    function guess() {
+      guessLetter.push(input.value.toUpperCase())
+      guessword.innerHTML = guessLetter.join(' ')
+      if (selectedword.includes(input.value.toUpperCase())) {
+        for (i = 0; i < selectedword.length; i++) {
+          if (selectedword[i] == input.value.toUpperCase()) {
+            displayWord[i] = input.value.toUpperCase()
+          }
+        }
+        words.innerHTML = displayWord.join(' ')
+      }
+      else {
+        lives--
+        livetag.innerHTML = lives
+      }
+      input.value = ''
+      if (!displayWord.includes('_')) {
+        alert("Win")
+      }
+      else if (lives == 0) {
+        alert("Game Over")
+      }
+    }
+    startGame()
+  </script>
+</body>
+
+</html>

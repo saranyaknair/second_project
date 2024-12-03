@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            text-align: center;
+            margin: 0;
+        }
+        button{
+            justify-content: center;
+            align-items: center;
+            place-items: center;
+        }
+        h1{
+            text-align: center;
+            font-size: x-large;
+            font-weight: bolder;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Rock Paper Scissor Game</h1>
+    <button onclick="startgame(event)" id="first" value="rock">✊</button>
+    <button onclick="startgame(event)" id="second"  value="paper">✋</button>
+    <button onclick="startgame(event)" id="third" value="scissor">✌️</button>
+    <script>
+        let selectItem = ''
+        let arr = ["rock", "paper", "scissor"]
+        let first = document.getElementById('first')
+        let second = document.getElementById('second')
+        let third = document.getElementById('third')
+        function startgame(e) {
+            let selectItem = arr[Math.floor(Math.random() * arr.length)]
+            console.log(selectItem, e.target.value);
+            if (e.target.value == selectItem) {
+                alert("oops!!!!!.......It's a tie")
+            } else if ((e.target.value == "rock" && selectItem == "scissor")|| (e.target.value == "paper" && selectItem == "rock") || (e.target.value == "scissor" && selectItem == "paper")){
+                alert(" You Won the game")
+            }else {
+                alert("You loose the game")
+            }
+
+        }
+    </script>
+</body>
+
+</html>
